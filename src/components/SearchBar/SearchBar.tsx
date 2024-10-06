@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, FormEvent, ChangeEvent } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { FaSearch } from "react-icons/fa";
 
@@ -6,13 +6,18 @@ import css from "../SearchBar/SearchBar.module.css";
 
 const notify = () => toast.error("This field cannot be empty!");
 
-export default function SearchBar({ onSubmit }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const handleChange = (e) => {
+interface SearchBarProps {
+  onSubmit: (searchQuery: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSubmit }) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchQuery.trim()) {
       notify();
@@ -44,4 +49,6 @@ export default function SearchBar({ onSubmit }) {
       <Toaster position="top-center" reverseOrder={false} />
     </header>
   );
-}
+};
+
+export default SearchBar;

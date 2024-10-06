@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { getPhotos } from "../../photos";
+import { getPhotos, Photo } from "../../photos";
 import SearchBar from "../SearchBar/SearchBar";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import ErrorMesage from "../ErrorMesage/ErrorMesage";
@@ -10,16 +10,16 @@ import ImageModal from "../ImageModal/ImageModal";
 
 import css from "../App/App.module.css";
 
-export default function App() {
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [images, setImages] = useState([]);
-  const [isLoading, setIsloading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [totalPages, setTotalPages] = useState(999);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+const App: React.FC = () => {
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [images, setImages] = useState<Photo[]>([]);
+  const [isLoading, setIsloading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
+  const [totalPages, setTotalPages] = useState<number>(999);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<Photo | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +38,9 @@ export default function App() {
 
         setTotalPages(total_pages);
       } catch (error) {
-        setError(error);
+        if (error instanceof Error) {
+          setError(error);
+        }
       } finally {
         setIsloading(false);
       }
@@ -46,7 +48,7 @@ export default function App() {
     fetchData();
   }, [page, query]);
 
-  const onHandleSubmit = (searchQuery) => {
+  const onHandleSubmit = (searchQuery: string) => {
     setQuery(searchQuery);
     setPage(1);
     setImages([]);
@@ -57,7 +59,7 @@ export default function App() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const openModal = (image) => {
+  const openModal = (image: Photo) => {
     setSelectedImage(image);
     setIsOpen(true);
   };
@@ -84,11 +86,12 @@ export default function App() {
       {modalIsOpen && selectedImage && (
         <ImageModal
           isOpen={modalIsOpen}
-          openModal={openModal}
           onRequestClose={closeModal}
           image={selectedImage}
         />
       )}
     </div>
   );
-}
+};
+
+export default App;
